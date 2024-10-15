@@ -25,6 +25,6 @@ public class AuthRequest {
         this.username = username;
     }
 
-    // Constructor, getters, setters
+
 }
 

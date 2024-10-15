@@ -7,50 +7,65 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/turnos")
+@RequestMapping("/api/turno")
 public class TurnoController {
 
     @Autowired
     private TurnoService turnoService;
-    @GetMapping
+    /*@GetMapping
     public List<TurnoDTO> getAllTurnos() {
         return turnoService.getAllTurnos();
     }
+
+     */
+
+
     // Endpoint para crear un turno
-    @PostMapping("/crear")
+    @PostMapping("/sacar-turno")
     public ResponseEntity<?> crearTurno(@RequestBody Map<String, Object> request) {
         try {
-            // Validar que 'fechaHora' esté presente en el cuerpo de la solicitud
-            if (!request.containsKey("fechaHora")) {
-                return ResponseEntity.badRequest().body("Parámetro 'fechaHora' es requerido.");
+
+            if (!request.containsKey("dia") || !request.containsKey("horarioInicio") ||
+                    !request.containsKey("servicioId") || !request.containsKey("usuarioId")) {
+                return ResponseEntity.badRequest().body("Parámetros 'dia', 'horarioInicio', 'servicioId', y 'usuarioId' son requeridos.");
             }
 
-            // Parsear y extraer datos del request
-            LocalDateTime fechaHora = LocalDateTime.parse((String) request.get("fechaHora"));
-            String estado = (String) request.get("estado");
-            String clienteId = (String) request.get("clienteId");
-            String profesionalId = (String) request.get("profesionalId");
+
+            LocalDate dia = LocalDate.parse((String) request.get("dia"));
+            LocalTime horarioInicio = LocalTime.parse((String) request.get("horarioInicio"));
+            String profesionalId = request.containsKey("profesionalId") ? (String) request.get("profesionalId") : null;
             String servicioId = (String) request.get("servicioId");
+            String usuarioId = (String) request.get("usuarioId");
 
-            // Llamar al servicio para guardar el turno
-            Turno nuevoTurno = turnoService.saveTurno(fechaHora, EstadoTurno.valueOf(estado), clienteId, profesionalId, servicioId);
 
-            // Responder con el turno creado
+            Turno nuevoTurno = turnoService.reservarTurno(dia, horarioInicio, servicioId, profesionalId, usuarioId);
+
+
             return ResponseEntity.ok(nuevoTurno);
+
         } catch (IllegalArgumentException e) {
-            // Manejo de excepciones específicas
-            return ResponseEntity.badRequest().body("error: " + e.getMessage());
+
+            return ResponseEntity.badRequest().body("Error de validación: " + e.getMessage());
+
         } catch (Exception e) {
-            // Manejo de cualquier otra excepción
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el turno: " + e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error inesperado: " + e.toString());
         }
     }
-    @PostMapping("/crear-disponibles")
+
+
+
+
+
+    /*@PostMapping("/crear-disponibles")
     public ResponseEntity<?> crearTurnosDisponibles(@RequestBody Map<String, Object> request) {
         try {
             // Validar que el 'profesionalId' y las fechas estén presentes en el request
@@ -79,7 +94,11 @@ public class TurnoController {
         }
     }
 
-    @PostMapping("/reservar")
+     */
+
+
+
+   /* @PostMapping("/reservar")
     public ResponseEntity<?> reservarTurno(@RequestBody Map<String, String> request) {
         try {
             // Validar que 'turnoId' y 'usuarioId' estén presentes en el cuerpo de la solicitud
@@ -104,6 +123,8 @@ public class TurnoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al reservar el turno: " + e.getMessage());
         }
     }
+
+    */
     @PostMapping("/cancelar-profesional")
     public ResponseEntity<?> cancelarTurnoPorProfesional(@RequestBody Map<String, String> request) {
         try {
@@ -156,7 +177,7 @@ public class TurnoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al cancelar el turno: " + e.getMessage());
         }
     }
-    @GetMapping("/usuario/{usuarioId}")
+    /*@GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<TurnoDTO>> getTurnosByUsuarioId(@PathVariable String usuarioId) {
         try {
             List<TurnoDTO> turnos = turnoService.getTurnosByUsuarioId(usuarioId);
@@ -166,6 +187,8 @@ public class TurnoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+     */
 
     // Endpoint para obtener un turno por ID
     @GetMapping("/{id}")

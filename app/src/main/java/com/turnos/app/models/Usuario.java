@@ -22,10 +22,10 @@ public class Usuario extends Persona {
     private String password;
     private String username;
     private String role;
-    // ObjectId automático de MongoDB
 
 
-    // Constructor, getters y setters
+
+
     public Usuario(String apellido, String nombre, String email, String telefono, String password, String username, String role) {
         super(apellido, nombre, email, telefono);
         this.password = password;

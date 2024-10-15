@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+
 public class UsuarioService {
 
     @Autowired
@@ -25,38 +26,43 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Obtener todos los usuarios
+
     public List<Usuario> getAllUsuarios() {
         return usuarioRepo.findAll();
     }
 
-    // Obtener un usuario por su ID
+
     public Optional<Usuario> getUsuarioById(String id) {
         return usuarioRepo.findById(id);
     }
 
-    // Crear o actualizar un usuario
+
     public Usuario saveUsuario(Usuario usuario) {
         // Verifica si el nombre de usuario ya existe
         if (usuarioRepo.existsByUsername(usuario.getUsername())) {
             throw new IllegalArgumentException("El nombre de usuario ya está en uso.");
         }
 
-        // Codifica la contraseña antes de guardarla
+
+        String role = (usuario.getRole() != null) ? usuario.getRole().toUpperCase() : "USER";
+        if (!role.equals("USER") && !role.equals("ADMIN")) {
+            throw new IllegalArgumentException("Rol inválido. Debe ser 'USER' o 'ADMIN'");
+        }
+
+
+        if (role.equals("ADMIN") && usuarioRepo.findByRole("ADMIN").isPresent()) {
+            throw new IllegalArgumentException("Ya existe un administrador en el sistema.");
+        }
+
+        usuario.setRole(role);
+
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
-        // Guarda el usuario
+
         return usuarioRepo.save(usuario);
-
-    }
-    public UsuarioService(UsuarioRepo usuarioRepo, @Lazy PasswordEncoder passwordEncoder) {
-        this.usuarioRepo = usuarioRepo;
-        this.passwordEncoder = passwordEncoder;
     }
 
 
-
-    // Eliminar un usuario por su ID
     public void deleteUsuario(String id) {
         usuarioRepo.deleteById(id);
     }

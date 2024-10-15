@@ -21,13 +21,13 @@ public class ProfesionalController {
     @Autowired
     private ProfesionalService profesionalService;
 
-    // Obtener todos los profesionales
+
     @GetMapping
     public List<Profesional> getAllProfesionales() {
         return profesionalService.getAllProfesionales();
     }
 
-    // Obtener un profesional por su ID
+
     @GetMapping("/{id}")
     public ResponseEntity<Profesional> getProfesionalById(@PathVariable String id) {
         Optional<Profesional> profesional = profesionalService.getProfesionalById(id);
@@ -67,26 +67,15 @@ public class ProfesionalController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el profesional: " + e.getMessage());
         }
     }
-*/
+
+     */
 
 
-    @PostMapping("/agregar-servicio")
-    public ResponseEntity<?> agregarServicioAProfesional(@RequestBody Map<String, Object> request) {
-        String profesionalId = request.containsKey("profesionalId") ? (String) request.get("profesionalId") : null;
-        String servicioId = request.containsKey("servicioId") ? (String) request.get("servicioId") : null;
-
-        try {
-            Profesional actualizado = profesionalService.agregarServicioAProfesional(profesionalId, servicioId);
-            return ResponseEntity.ok(actualizado);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al agregar el servicio al profesional: " + e.getMessage());
-        }
-    }
 
 
-    // Eliminar un profesional por su ID
+
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProfesional(@PathVariable String id) {
         profesionalService.deleteProfesional(id);

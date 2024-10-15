@@ -1,7 +1,6 @@
 package com.turnos.app.models;
 
 
-import com.turnos.app.models.Profesional;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,12 +13,15 @@ public class Servicio{
     private String id;
     private String nombre;
     private String descripcion;
-    private List<Profesional> profesional;
+    private int duracionMinutos;
+    private List<ProfesionalDTO> profesionales;
 
-    public Servicio(String nombre, String descripcion, List<Profesional> profesional) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.profesional = profesional;
+    public Servicio(String nombre, String descripcion, int duracionMinutos, List<ProfesionalDTO> profesionales) {
+            this.nombre = nombre;
+            this.descripcion = descripcion;
+            this.duracionMinutos = duracionMinutos;
+            this.profesionales = profesionales;
+
     }
 
     // Getters y setters
@@ -39,11 +41,19 @@ public class Servicio{
     }
 
 
-    public List<Profesional> getProfesional() {
-        return profesional;
+    public List<ProfesionalDTO> getProfesionales() {
+        return profesionales;
     }
 
-    public void setProfesional(List<Profesional> profesional) {
-        this.profesional = profesional;
+    public void setProfesionales(List<ProfesionalDTO> profesionales) {
+        this.profesionales = profesionales;
+    }
+
+    public int getDuracionMinutos() {
+        return duracionMinutos;
+    }
+
+    public void setDuracionMinutos(int duracionMinutos) {
+        this.duracionMinutos = duracionMinutos;
     }
 }

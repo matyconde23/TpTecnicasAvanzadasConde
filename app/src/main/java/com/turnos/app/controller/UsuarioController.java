@@ -14,33 +14,33 @@ import com.turnos.app.models.Usuario;
 
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping("/api/usuario")
 public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
 
-    // Obtener todos los usuarios
+
     @GetMapping
     public List<Usuario> getAllUsuarios() {
         return usuarioService.getAllUsuarios();
     }
 
-    // Obtener un usuario por su ID
+
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> getUsuarioById(@PathVariable String id) {
         Optional<Usuario> usuario = usuarioService.getUsuarioById(id);
         return usuario.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Crear o actualizar un usuario
+
     @PostMapping
     public Usuario createOrUpdateUsuario(@RequestBody Usuario usuario) {
         return usuarioService.saveUsuario(usuario);
     }
 
-    // Eliminar un usuario por su ID
-    @DeleteMapping("/{id}")
+
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> deleteUsuario(@PathVariable String id) {
         usuarioService.deleteUsuario(id);
         return ResponseEntity.noContent().build();

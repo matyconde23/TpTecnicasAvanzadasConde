@@ -39,7 +39,12 @@ public class SecurityConfig {
         return http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("api/auth/**").anonymous()
-                        .requestMatchers(HttpMethod.POST,"/api/turnos/crear").permitAll()
+                        .requestMatchers("/api/turno/sacar-turno").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/servicio/crear").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/usuario/delete").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/servicio/agregar-profesional").hasRole("PROFESIONAL")
+                        .requestMatchers(HttpMethod.POST,"api/turno/crear-disponibles").hasRole("PROFESIONAL")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
