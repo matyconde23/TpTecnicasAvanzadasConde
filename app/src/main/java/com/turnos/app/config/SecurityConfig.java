@@ -52,7 +52,10 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http.csrf(csrf -> csrf.disable()) // Deshabilitamos CSRF para uso de JWT
+        return http
+            .cors()
+            .and()
+            .csrf().disable()
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("api/auth/**").anonymous() // Permitir rutas de autenticación para usuarios anónimos
                     .requestMatchers("/api/turno/sacar-turno").hasRole("USER") // Solo usuarios con el rol USER pueden sacar turnos
@@ -64,10 +67,10 @@ public class SecurityConfig implements WebMvcConfigurer {
                     .requestMatchers(HttpMethod.GET, "api/profesional/all").anonymous() // Permitir la consulta de todos los profesionales a usuarios anónimos
                     .anyRequest().authenticated() // Cualquier otra solicitud requiere autenticación
             )
-            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class) // Añadimos el filtro JWT antes del UsernamePasswordAuthenticationFilter
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No se gestionan sesiones ya que usamos JWT
+            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .build();
-}
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -78,26 +81,14 @@ public class SecurityConfig implements WebMvcConfigurer {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-    
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));  // Permitir el origen de tu frontend
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));  
-        configuration.setAllowCredentials(true); 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); 
-        return source;
-    }
-/*@Override
+
+    @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS")
-.allowCredentials(true);
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
     }
-*/
-     
-
 }
