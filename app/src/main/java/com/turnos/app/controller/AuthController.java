@@ -4,8 +4,7 @@ import com.turnos.app.models.AuthRequest;
 import com.turnos.app.models.AuthResponse;
 import com.turnos.app.models.Profesional;
 import com.turnos.app.models.Usuario;
-import com.turnos.app.repository.ProfesionalRepo;
-import com.turnos.app.repository.UsuarioRepo;
+
 import com.turnos.app.service.ProfesionalService;
 import com.turnos.app.service.UserDetailsServiceImpl;
 import com.turnos.app.service.UsuarioService;
@@ -15,13 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.web.bind.annotation.*;
 import com.turnos.app.util.JwtUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -36,26 +33,59 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+
     @Autowired
     private UsuarioService usuarioService;
 
     @Autowired
     private ProfesionalService profesionalService;
-
+    
+    
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-            );
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: Usuario o contraseña inválidos.");
-        }
-
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
-        String jwt = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(jwt);
+public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
+    try {
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+        );
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: Usuario o contraseña inválidos.");
     }
+
+    final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
+    String jwt = jwtUtil.generateToken(userDetails);
+
+    // Primero, intenta encontrar un usuario con el nombre de usuario proporcionado
+    Usuario usuario = null;
+    Profesional profesional = null;
+
+    try {
+        usuario = usuarioService.findByUsername(authRequest.getUsername());
+    } catch (Exception e) {
+        // Aquí simplemente manejamos la excepción o la ignoramos si no se encuentra un Usuario
+    }
+
+    if (usuario != null) {
+        AuthResponse authResponse = new AuthResponse(jwt, usuario.getId(), usuario.getRole());
+        return ResponseEntity.ok(authResponse);
+    }
+
+    // Si no se encuentra un usuario, intenta encontrar un profesional
+    try {
+        profesional = profesionalService.findByUsername(authRequest.getUsername());
+    } catch (Exception e) {
+        // Aquí manejamos la excepción o la ignoramos si no se encuentra un Profesional
+    }
+
+    if (profesional != null) {
+        AuthResponse authResponse = new AuthResponse(jwt, profesional.getId(), profesional.getRole());
+        return ResponseEntity.ok(authResponse);
+    }
+
+    // Si no se encuentra ni usuario ni profesional, devolver un error
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: Usuario o profesional no encontrado.");
+}
+
+
 
     @PostMapping("/register/usuario")
     public ResponseEntity<String> registerUsuario(@RequestBody Usuario usuario) {

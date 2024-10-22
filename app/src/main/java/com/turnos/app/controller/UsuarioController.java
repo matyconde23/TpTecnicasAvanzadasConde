@@ -14,6 +14,7 @@ import com.turnos.app.models.Usuario;
 
 
 @RestController
+
 @RequestMapping("/api/usuario")
 public class UsuarioController {
 
@@ -26,12 +27,13 @@ public class UsuarioController {
         return usuarioService.getAllUsuarios();
     }
 
-
+    
     @GetMapping("/{id}")
     public ResponseEntity<Usuario> getUsuarioById(@PathVariable String id) {
         Optional<Usuario> usuario = usuarioService.getUsuarioById(id);
         return usuario.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
 
 
     @PostMapping
@@ -45,5 +47,6 @@ public class UsuarioController {
         usuarioService.deleteUsuario(id);
         return ResponseEntity.noContent().build();
     }
+    
 
 }

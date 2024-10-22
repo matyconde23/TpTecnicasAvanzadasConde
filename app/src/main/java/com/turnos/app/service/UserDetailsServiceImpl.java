@@ -59,7 +59,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<Profesional> profesional = profesionalRepo.findByUsername(username);
         if (profesional.isPresent()) {
             List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_PROFESIONAL")); // Asignar rol "PROFESIONAL"
+            authorities.add(new SimpleGrantedAuthority("PROFESIONAL")); // Asignar rol "PROFESIONAL"
             return new org.springframework.security.core.userdetails.User(
                     profesional.get().getUsername(),
                     profesional.get().getPassword(),

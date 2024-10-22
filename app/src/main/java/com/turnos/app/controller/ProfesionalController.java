@@ -21,8 +21,8 @@ public class ProfesionalController {
     @Autowired
     private ProfesionalService profesionalService;
 
-
-    @GetMapping
+    
+    @GetMapping("/all")
     public List<Profesional> getAllProfesionales() {
         return profesionalService.getAllProfesionales();
     }

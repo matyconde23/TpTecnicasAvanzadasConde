@@ -29,7 +29,10 @@ public class ProfesionalService {
     public List<Profesional> getAllProfesionales() {
         return profesionalRepo.findAll();
     }
-
+    
+    public Profesional findByUsername(String username) {
+        return profesionalRepo.findByUsername(username).orElse(null);
+    }
 
     public Optional<Profesional> getProfesionalById(String id) {
         return profesionalRepo.findById(id);

@@ -5,14 +5,11 @@ import com.turnos.app.models.Usuario;
 import com.turnos.app.repository.UsuarioRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -30,8 +27,12 @@ public class UsuarioService {
     public List<Usuario> getAllUsuarios() {
         return usuarioRepo.findAll();
     }
+    public Usuario findByUsername(String username) {
+        return usuarioRepo.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con el nombre de usuario: " + username));
+    }
 
-
+    
     public Optional<Usuario> getUsuarioById(String id) {
         return usuarioRepo.findById(id);
     }

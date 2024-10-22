@@ -28,6 +28,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
+        response.setHeader("Content-Security-Policy", "script-src 'self' 'unsafe-inline';");
+
 
         String username = null;
         String jwt = null;
