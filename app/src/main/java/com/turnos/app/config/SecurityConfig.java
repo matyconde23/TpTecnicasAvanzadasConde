@@ -32,6 +32,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 public class SecurityConfig implements WebMvcConfigurer {
 
@@ -53,23 +55,22 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .cors()
-            .and()
-            .csrf().disable()
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("api/auth/**").anonymous() // Permitir rutas de autenticación para usuarios anónimos
-                    .requestMatchers("/api/turno/sacar-turno").hasRole("USER") // Solo usuarios con el rol USER pueden sacar turnos
-                    .requestMatchers(HttpMethod.POST, "/api/servicio/crear").hasRole("ADMIN") // Solo administradores pueden crear servicios
-                    .requestMatchers(HttpMethod.DELETE, "/api/usuario/delete").hasRole("ADMIN") // Solo administradores pueden eliminar usuarios
-                    .requestMatchers(HttpMethod.DELETE, "/api/servicio/agregar-profesional").hasRole("PROFESIONAL") // Solo profesionales pueden agregar servicios
-                    .requestMatchers(HttpMethod.POST, "api/turno/crear-disponibles").hasRole("PROFESIONAL") // Solo profesionales pueden crear disponibilidad de turnos
-                    .requestMatchers(HttpMethod.GET, "api/usuario/{id}").hasRole("USER") // Solo usuarios con rol USER pueden acceder a este endpoint
-                    .requestMatchers(HttpMethod.GET, "api/profesional/all").anonymous() // Permitir la consulta de todos los profesionales a usuarios anónimos
-                    .anyRequest().authenticated() // Cualquier otra solicitud requiere autenticación
-            )
-            .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-            .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .build();
+                .cors(withDefaults())
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                                .requestMatchers("api/auth/**").anonymous() // Permitir rutas de autenticación para usuarios anónimos
+                                .requestMatchers("/api/turno/sacar-turno").hasRole("USER") // Solo usuarios con el rol USER pueden sacar turnos
+                                .requestMatchers(HttpMethod.POST, "/api/servicio/crear").hasRole("ADMIN") // Solo administradores pueden crear servicios
+                                .requestMatchers(HttpMethod.DELETE, "/api/usuario/delete").hasRole("ADMIN") // Solo administradores pueden eliminar usuarios
+                                .requestMatchers(HttpMethod.DELETE, "/api/servicio/agregar-profesional").hasRole("PROFESIONAL") // Solo profesionales pueden agregar servicios
+                                .requestMatchers(HttpMethod.POST, "api/turno/crear-disponibles").hasRole("PROFESIONAL") // Solo profesionales pueden crear disponibilidad de turnos
+                                .requestMatchers(HttpMethod.GET, "api/usuario/{id}").hasRole("USER") // Solo usuarios con rol USER pueden acceder a este endpoint
+                                .requestMatchers(HttpMethod.GET, "api/profesional/all").anonymous() // Permitir la consulta de todos los profesionales a usuarios anónimos
+                                .anyRequest().authenticated() // Cualquier otra solicitud requiere autenticación
+                )
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .build();
     }
 
     @Bean
