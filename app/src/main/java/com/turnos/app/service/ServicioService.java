@@ -18,8 +18,11 @@ public class ServicioService {
 
     @Autowired
     private ServicioRepo servicioRepo;
+    
     @Autowired
     private ProfesionalRepo profesionalRepo;
+
+
 
     public List<Servicio> getAllServicios() {
         return servicioRepo.findAll();
@@ -43,42 +46,45 @@ public class ServicioService {
 
         return servicioRepo.save(servicio);
     }
+
+
     public Servicio agregarProfesionalaServicio(String profesionalId, String servicioId) {
 
-        if (profesionalId == null || servicioId == null) {
-            throw new IllegalArgumentException("El ID del profesional y el ID del servicio son obligatorios.");
-        }
-
-
-        Profesional profesional = profesionalRepo.findById(profesionalId)
-                .orElseThrow(() -> new IllegalArgumentException("Profesional no encontrado con el ID: " + profesionalId));
-
-
-        Servicio servicio = servicioRepo.findById(servicioId)
-                .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado con el ID: " + servicioId));
-
-
-        ProfesionalDTO profesionalDTO= new ProfesionalDTO(profesional.getId(),profesional.getApellido(), profesional.getNombre());
-
-
-        if (servicio.getProfesionales() == null) {
-            servicio.setProfesionales(new ArrayList<>());
-        }
-
-
-        boolean profesionalYaAgregado = servicio.getProfesionales().stream()
-                .anyMatch(p -> p.getNombre().equals(profesionalDTO.getNombre()) && p.getApellido().equals(profesionalDTO.getApellido()));
-
-        if (profesionalYaAgregado) {
-            throw new IllegalArgumentException("El profesional ya está agregado a este servicio.");
-        }
-
-
-        servicio.getProfesionales().add(profesionalDTO);
-
-
-        return servicioRepo.save(servicio);
+    if (profesionalId == null || servicioId == null) {
+        throw new IllegalArgumentException("El ID del profesional y el ID del servicio son obligatorios.");
     }
+
+    // Buscar al profesional en la base de datos
+    Profesional profesional = profesionalRepo.findById(profesionalId)
+            .orElseThrow(() -> new IllegalArgumentException("Profesional no encontrado con el ID: " + profesionalId));
+
+    // Buscar el servicio en la base de datos
+    Servicio servicio = servicioRepo.findById(servicioId)
+            .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado con el ID: " + servicioId));
+
+    // Crear un DTO del profesional
+    ProfesionalDTO profesionalDTO = new ProfesionalDTO(profesional.getNombre(), profesional.getApellido(), profesional.getId());
+
+    // Inicializar la lista de profesionales si está vacía
+    if (servicio.getProfesionales() == null) {
+        servicio.setProfesionales(new ArrayList<>());
+    }
+
+    // Validar si el profesional ya está asociado al servicio
+    boolean profesionalYaAgregado = servicio.getProfesionales().stream()
+            .anyMatch(p -> p.getId().equals(profesionalDTO.getId())); // Comprobación basada en el ID único
+
+    if (profesionalYaAgregado) {
+        throw new IllegalArgumentException("El profesional ya está agregado a este servicio.");
+    }
+
+    // Agregar el profesional al servicio
+    servicio.getProfesionales().add(profesionalDTO);
+
+    // Guardar y devolver el servicio actualizado
+    return servicioRepo.save(servicio);
+}
+
 
     public List<Profesional> getProfesionalesPorServicio(String servicioId) {
 
@@ -96,6 +102,11 @@ public class ServicioService {
         }
 
         return profesionales;
+    }
+
+
+public List<Servicio> obtenerServiciosPorProfesional(String profesionalId) {
+    return servicioRepo.findByProfesionales_Id(profesionalId);
     }
 }
 

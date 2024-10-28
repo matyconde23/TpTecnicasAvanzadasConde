@@ -5,6 +5,10 @@ import Login from './Pages/Login';
 import Register from './Pages/Register';
 import UserProfile from './Pages/UserProfile'; 
 import ProfesionalView from './Pages/ProfesionalView';// Import UsuarioView component
+import ViewAdmin from './Pages/ViewAdmin';
+import RegisterPaciente from './Pages/RegisterPaciente';
+import RegisterProfesional from './Pages/RegisterProfesional';
+
 
 const App = () => {
     return (
@@ -15,6 +19,9 @@ const App = () => {
                 <Route path="/register" element={<Register />} />
                 <Route path="/userProfile" element={<UserProfile />} />  {/* Add the user view */}
                 <Route path="/profesionalView" element={<ProfesionalView />} /> {/* Nueva ruta */}
+                <Route path="/viewAdmin" element={<ViewAdmin />}/>
+                <Route path='/registerProfesional' element={<RegisterProfesional/>}/>
+                <Route path='/registerPaciente' element={<RegisterPaciente/>}/>
             </Routes>
         </Router>
     );

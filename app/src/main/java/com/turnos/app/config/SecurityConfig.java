@@ -61,11 +61,15 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers("api/auth/**").anonymous() // Permitir rutas de autenticación para usuarios anónimos
                                 .requestMatchers("/api/turno/sacar-turno").hasRole("USER") // Solo usuarios con el rol USER pueden sacar turnos
                                 .requestMatchers(HttpMethod.POST, "/api/servicio/crear").hasRole("ADMIN") // Solo administradores pueden crear servicios
-                                .requestMatchers(HttpMethod.DELETE, "/api/usuario/delete").hasRole("ADMIN") // Solo administradores pueden eliminar usuarios
-                                .requestMatchers(HttpMethod.DELETE, "/api/servicio/agregar-profesional").hasRole("PROFESIONAL") // Solo profesionales pueden agregar servicios
+                                .requestMatchers(HttpMethod.DELETE, "/api/usuario/delete").hasRole("ADMIN") // Solo administradores pueden eliminar usuarios 
                                 .requestMatchers(HttpMethod.POST, "api/turno/crear-disponibles").hasRole("PROFESIONAL") // Solo profesionales pueden crear disponibilidad de turnos
                                 .requestMatchers(HttpMethod.GET, "api/usuario/{id}").hasRole("USER") // Solo usuarios con rol USER pueden acceder a este endpoint
-                                .requestMatchers(HttpMethod.GET, "api/profesional/all").anonymous() // Permitir la consulta de todos los profesionales a usuarios anónimos
+                                .requestMatchers(HttpMethod.GET, "api/profesional/all").hasRole("PROFESIONAL")
+                                .requestMatchers(HttpMethod.GET,"/api/turno/profesional/{profesionalId}").authenticated()
+                                .requestMatchers(HttpMethod.POST,"/api/turno/cancelar-profesional").authenticated()
+                                .requestMatchers(HttpMethod.GET,"api/servicios/all").anonymous()
+                                .requestMatchers(HttpMethod.GET,"/api/turno/usuario/{usuarioId}").authenticated()
+                                 // Permitir la consulta de todos los profesionales a usuarios anónimos
                                 .anyRequest().authenticated() // Cualquier otra solicitud requiere autenticación
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

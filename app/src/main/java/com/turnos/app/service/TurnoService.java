@@ -6,10 +6,12 @@ import com.turnos.app.repository.UsuarioRepo;
 import com.turnos.app.repository.ProfesionalRepo;
 import com.turnos.app.repository.ServicioRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,53 +59,50 @@ public class TurnoService {
     /*
      */
 
-    public Turno reservarTurno(LocalDate dia, LocalTime horarioInicio, String servicioId, String profesionalId, String usuarioId) {
-
-        Servicio servicio = servicioRepo.findById(servicioId)
-                .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado"));
-        ServicioDTO servicioDTO = new ServicioDTO(servicio.getNombre(), servicio.getDuracionMinutos(), servicio.getId());
-
-
-        Usuario usuario = usuarioRepo.findById(usuarioId)
-                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-        UsuarioDTO usuarioDTO = new UsuarioDTO(usuario.getNombre(), usuario.getApellido(), usuario.getId());
-
-
-        Profesional profesional = null;
-        ProfesionalDTO profesionalDTO = null;
-
-        if (profesionalId == null || profesionalId.isEmpty()) {
-
-            profesional = encontrarProfesionalDisponible(servicio, dia, horarioInicio);
-            if (profesional == null) {
-                throw new IllegalArgumentException("No hay profesionales disponibles para este servicio en la fecha y hora solicitadas.");
+     public Turno reservarTurno(LocalDate dia, LocalTime horarioInicio, String servicioId, String profesionalId, String usuarioId) {
+        try {
+            Servicio servicio = servicioRepo.findById(servicioId)
+                    .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado"));
+            ServicioDTO servicioDTO = new ServicioDTO(servicio.getNombre(), servicio.getDuracionMinutos(), servicio.getId());
+    
+            Usuario usuario = usuarioRepo.findById(usuarioId)
+                    .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+            UsuarioDTO usuarioDTO = new UsuarioDTO(usuario.getNombre(), usuario.getApellido(), usuario.getId());
+    
+            Profesional profesional = null;
+            ProfesionalDTO profesionalDTO = null;
+    
+            if (profesionalId == null || profesionalId.isEmpty()) {
+                profesional = encontrarProfesionalDisponible(servicio, dia, horarioInicio);
+                if (profesional == null) {
+                    throw new IllegalArgumentException("No hay profesionales disponibles para este servicio en la fecha y hora solicitadas.");
+                }
+                profesionalDTO = new ProfesionalDTO(profesional.getNombre(), profesional.getApellido(), profesional.getId());
+            } else {
+                profesional = profesionalRepo.findById(profesionalId)
+                        .orElseThrow(() -> new IllegalArgumentException("Profesional no encontrado"));
+                profesionalDTO = new ProfesionalDTO(profesional.getNombre(), profesional.getApellido(), profesional.getId());
             }
-            profesionalDTO = new ProfesionalDTO(profesional.getNombre(), profesional.getApellido(), profesional.getId());
-        } else {
-
-            profesional = profesionalRepo.findById(profesionalId)
-                    .orElseThrow(() -> new IllegalArgumentException("Profesional no encontrado"));
-            profesionalDTO = new ProfesionalDTO(profesional.getNombre(), profesional.getApellido(), profesional.getId());
+    
+            int duracionMinutos = servicio.getDuracionMinutos();
+            LocalTime horarioFin = horarioInicio.plusMinutes(duracionMinutos);
+    
+            boolean profesionalDisponible = verificarDisponibilidad(profesional, dia, horarioInicio, horarioFin);
+    
+            if (!profesionalDisponible) {
+                throw new IllegalArgumentException("El profesional no está disponible en la fecha y horario solicitados.");
+            }
+    
+            Turno nuevoTurno = new Turno(dia, horarioInicio, horarioFin, EstadoTurno.RESERVADO, usuarioDTO, profesionalDTO, servicioDTO);
+    
+            return turnoRepo.save(nuevoTurno);
+        } catch (Exception e) {
+            System.err.println("Error al reservar el turno: " + e.getMessage());
+            e.printStackTrace();
+            return null;
         }
-
-
-        int duracionMinutos = servicio.getDuracionMinutos();
-        LocalTime horarioFin = horarioInicio.plusMinutes(duracionMinutos);
-
-
-        boolean profesionalDisponible = verificarDisponibilidad(profesional, dia, horarioInicio, horarioFin);
-
-        if (!profesionalDisponible) {
-            throw new IllegalArgumentException("El profesional no está disponible en la fecha y horario solicitados.");
-        }
-
-
-        Turno nuevoTurno = new Turno(dia, horarioInicio, horarioFin, EstadoTurno.RESERVADO, usuarioDTO, profesionalDTO, servicioDTO);
-
-
-        return turnoRepo.save(nuevoTurno);
     }
-
+    
 
     private Profesional encontrarProfesionalDisponible(Servicio servicio, LocalDate dia, LocalTime horarioInicio) {
 
@@ -123,19 +122,62 @@ public class TurnoService {
 
 
 
+    
     private boolean verificarDisponibilidad(Profesional profesional, LocalDate dia, LocalTime horarioInicio, LocalTime horarioFin) {
+        // Convertir el día de la semana en español para coincidir con el formato en `ProfesionalDisponibilidad`
+        String diaSolicitado = convertirDiaSemana(dia.getDayOfWeek());
+    
+        // Verificar si el profesional está disponible en el día y horario solicitado
+        boolean diaDisponible = profesional.getDisponibilidad().stream().anyMatch(disponibilidad ->
+                disponibilidad.getDiaSemana().equalsIgnoreCase(diaSolicitado) &&
+                (horarioInicio.equals(disponibilidad.getHoraInicio()) || horarioInicio.isAfter(disponibilidad.getHoraInicio())) &&
+                (horarioFin.equals(disponibilidad.getHoraFin()) || horarioFin.isBefore(disponibilidad.getHoraFin()))
+        );
+    
+        if (!diaDisponible) {
+            System.err.println("El profesional no está disponible en el día o horario solicitado.");
+            return false; // El día o el horario no coinciden con la disponibilidad del profesional
+        }
+    
         // Buscar los turnos existentes del profesional en esa fecha
         List<Turno> turnosExistentes = turnoRepo.findByProfesionalAndDia(profesional, dia);
-
+    
         for (Turno turno : turnosExistentes) {
             // Verificar si el horario del nuevo turno se solapa con los turnos existentes
             if (horarioInicio.isBefore(turno.getFechaFin()) && horarioFin.isAfter(turno.getFechainicio())) {
-                return false;  // El profesional ya está ocupado en este rango de horario
+                System.err.println("El profesional ya tiene un turno en este rango de horario.");
+                return false; // El profesional ya está ocupado en este rango de horario
             }
         }
-
-        return true;  // El profesional está disponible
+    
+        return true; // El profesional está disponible
     }
+
+// Método para convertir `DayOfWeek` a `String` en español
+
+private String convertirDiaSemana(DayOfWeek dayOfWeek) {
+    switch (dayOfWeek) {
+        case MONDAY:
+            return "Lunes";
+        case TUESDAY:
+            return "Martes";
+        case WEDNESDAY:
+            return "Miércoles";
+        case THURSDAY:
+            return "Jueves";
+        case FRIDAY:
+            return "Viernes";
+        case SATURDAY:
+            return "Sábado";
+        case SUNDAY:
+            return "Domingo";
+        default:
+            throw new IllegalArgumentException("Día de la semana no válido: " + dayOfWeek);
+    }
+}
+
+    
+    
 
    /* public List<Turno> crearTurnosDisponibles(LocalDateTime fechaInicio, LocalDateTime fechaFin, String profesionalId, String servicioId, int intervaloMinutos) {
         // Validar que el profesional exista
@@ -295,6 +337,13 @@ public class TurnoService {
             throw new IllegalArgumentException("Turno no encontrado");
         }
         return turnoOpt.get();
+    }
+
+    public List<Turno> obtenerTurnosPorProfesional(String profesionalId) {
+        return turnoRepo.findByProfesional_Id(profesionalId);
+    }
+    public List<Turno> obtenerTurnosPorUsuario(String usuarioId) {
+        return turnoRepo.findByUsuario_Id(usuarioId);
     }
 }
 

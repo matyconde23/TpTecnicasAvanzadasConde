@@ -24,11 +24,12 @@ export const request = (method, url, data) => {
     const token = getAuthToken();
     let headers = {};
 
-    if (token !== null && token !== "null") {
-        headers = {'Authorization': `Bearer ${token}`};
+    // Solo añade el token si no es una solicitud de registro o login
+    if (token !== null && token !== "null" && !url.includes('/api/auth/register') && !url.includes('/api/auth/login')) {
+        headers = { 'Authorization': `Bearer ${token}` };
         console.log("Token enviado:", token);  // Verifica que el token se está enviando
     } else {
-        console.log("No token found");
+        console.log("No token sent for this request");
     }
 
     return axios({

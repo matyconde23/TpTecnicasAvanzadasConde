@@ -19,6 +19,7 @@ public class TurnoController {
 
     @Autowired
     private TurnoService turnoService;
+    
     /*@GetMapping
     public List<TurnoDTO> getAllTurnos() {
         return turnoService.getAllTurnos();
@@ -195,5 +196,17 @@ public class TurnoController {
     public Turno obtenerTurno(@PathVariable String id) {
         return turnoService.obtenerTurnoPorId(id);
     }
+
+    @GetMapping("/profesional/{profesionalId}")
+    public ResponseEntity<List<Turno>> obtenerTurnosPorProfesional(@PathVariable String profesionalId) {
+        List<Turno> turnos = turnoService.obtenerTurnosPorProfesional(profesionalId);
+        return ResponseEntity.ok(turnos);
+    }
+    
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<Turno>> obtenerTurnosPorUsuario(@PathVariable String usuarioId) {
+    List<Turno> turnos = turnoService.obtenerTurnosPorUsuario(usuarioId);
+    return ResponseEntity.ok(turnos);
+}
 }
 

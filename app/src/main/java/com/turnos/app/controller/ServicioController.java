@@ -24,7 +24,7 @@ public class ServicioController {
     private ServicioService servicioService;
 
 
-    @GetMapping
+    @GetMapping()
     public List<Servicio> getAllservicios() {
         return servicioService.getAllServicios();
     }
@@ -92,6 +92,12 @@ public class ServicioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error inesperado: " + e.toString());
         }
+    }
+    
+    @GetMapping("/profesional/{profesionalId}")
+    public ResponseEntity<List<Servicio>> obtenerServiciosPorProfesional(@PathVariable String profesionalId) {
+        List<Servicio> servicios = servicioService.obtenerServiciosPorProfesional(profesionalId);
+        return ResponseEntity.ok(servicios);
     }
 
 

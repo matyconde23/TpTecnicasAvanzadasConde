@@ -9,6 +9,7 @@ import com.turnos.app.service.ProfesionalService;
 import com.turnos.app.service.UserDetailsServiceImpl;
 import com.turnos.app.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -87,15 +88,23 @@ public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
 
 
 
-    @PostMapping("/register/usuario")
-    public ResponseEntity<String> registerUsuario(@RequestBody Usuario usuario) {
-        try {
-            usuarioService.saveUsuario(usuario);
-            return ResponseEntity.ok("Usuario registrado con éxito");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+   @PostMapping("/register/usuario")
+public ResponseEntity<String> registerUsuario(@RequestBody Usuario usuario) {
+    try {
+        usuarioService.saveUsuario(usuario);
+        return ResponseEntity.ok("Usuario registrado con éxito");
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body("Error en la entrada de datos: " + e.getMessage());
+    } catch (DataIntegrityViolationException e) {
+        // Captura errores de integridad de datos, como duplicados en la base de datos
+        return ResponseEntity.badRequest().body("Error de integridad de datos: " + e.getMessage());
+    } catch (Exception e) {
+        // Captura cualquier otra excepción inesperada
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error inesperado al registrar el usuario: " + e.getMessage());
     }
+}
+
 
     @PostMapping("/register/profesional")
     public ResponseEntity<String> registerProfesional(@RequestBody Profesional profesional) {

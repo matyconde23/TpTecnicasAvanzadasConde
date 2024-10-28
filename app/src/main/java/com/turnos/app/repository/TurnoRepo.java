@@ -11,4 +11,6 @@ public interface TurnoRepo extends MongoRepository<Turno, String> {
 
     List<Turno> findByUsuarioId(String usuarioId);
     List<Turno> findByProfesionalAndDia(Profesional profesional, LocalDate dia);
+    List<Turno> findByProfesional_Id(String profesionalId);
+    List<Turno> findByUsuario_Id(String usuarioId);
 }

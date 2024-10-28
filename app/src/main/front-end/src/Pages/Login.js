@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../App.css';
+import '../css/App.css';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -32,7 +32,10 @@ const Login = () => {
                 navigate(`/userProfile`); 
             } else if (role === 'PROFESIONAL') {
                 navigate('/profesionalView'); 
+            } else if (role === "ADMIN"){
+                navigate('/viewAdmin');
             }
+            
         } catch (error) {
             console.error("Error details:", error.response);
             setError(error.response?.data?.message || 'Usuario o contraseña incorrectos');

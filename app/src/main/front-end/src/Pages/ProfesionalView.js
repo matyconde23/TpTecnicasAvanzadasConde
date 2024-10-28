@@ -1,46 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+// ProfesionalView.js
+import React, { useState } from 'react';
+import TurnosProfesional from '../Components/TurnosProfesional';
+import ServiciosProfesionales from '../Components/ServiciosProfesionales';
+import AgregarServicio from '../Components/AgregarServicio'; // Nuevo componente
+import '../css/TurnosProfesional.css';
 
-const ProfesionalViewAll = () => {
-    const [profesionales, setProfesionales] = useState([]);
-    const [error, setError] = useState('');
+const ProfesionalView = () => {
+    const [showTurnos, setShowTurnos] = useState(false);
+    const [showServicios, setShowServicios] = useState(false);
+    const [showAgregarServicio, setShowAgregarServicio] = useState(false); // Estado para mostrar AgregarServicio
+    const id = localStorage.getItem('id'); // ID del profesional
 
-    // Función para obtener los profesionales desde la API
-    useEffect(() => {
-        const fetchProfesionales = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/profesional/all'); // Asegúrate de que esta URL sea la correcta
-                setProfesionales(response.data);
-            } catch (error) {
-                setError('Error al obtener la lista de profesionales');
-                console.error('Error fetching profesionales:', error);
-            }
-        };
-
-        fetchProfesionales();
-    }, []);
-
-    // Mostrar un mensaje si hay un error
-    if (error) {
-        return <p>{error}</p>;
-    }
-
-    // Mostrar la lista de profesionales si se obtuvieron correctamente
     return (
-        <div>
-            <h2>Lista de Profesionales</h2>
-            <ul>
-                {profesionales.map((profesional) => (
-                    <li key={profesional.id}>
-                        <p><strong>Nombre:</strong> {profesional.nombre} {profesional.apellido}</p>
-                        <p><strong>Email:</strong> {profesional.email}</p>
-                        <p><strong>Especialidad:</strong> {profesional.especialidad}</p>
-                    </li>
-                ))}
-            </ul>
+        <div className="profesional-view-container">
+            <h2 className="title">Vista del Profesional</h2>
+            
+            <div className="button-container">
+                <button onClick={() => setShowTurnos(!showTurnos)} className="ver-turnos-button">
+                    {showTurnos ? 'Ocultar Turnos' : 'Ver Turnos'}
+                </button>
+                <button onClick={() => setShowServicios(!showServicios)} className="ver-servicios-button">
+                    {showServicios ? 'Ocultar Servicios' : 'Ver Servicios'}
+                </button>
+                <button onClick={() => setShowAgregarServicio(!showAgregarServicio)} className="agregar-servicio-button">
+                    {showAgregarServicio ? 'Ocultar Selección de Servicio' : 'Agregar Servicio'}
+                </button>
+            </div>
+
+            {showTurnos && <TurnosProfesional profesionalId={id} />}
+            {showServicios && <ServiciosProfesionales profesionalId={id} />}
+            {showAgregarServicio && <AgregarServicio profesionalId={id} />}
         </div>
     );
 };
 
-export default ProfesionalViewAll;
-
+export default ProfesionalView;
