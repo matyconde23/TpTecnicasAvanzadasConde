@@ -12,7 +12,7 @@ const AgregarServicio = ({ profesionalId }) => {
     useEffect(() => {
         const fetchServicios = async () => {
             try {
-                const response = await request('get', '/api/servicio');
+                const response = await request('get', '/api/servicio/all');
                 setServicios(response.data);
             } catch (error) {
                 setMessage('Error al obtener los servicios');

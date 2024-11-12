@@ -38,42 +38,6 @@ public class ProfesionalController {
         }
     }
 
-    // Crear o actualizar un profesional
-    /*@PostMapping("/crear")
-    public ResponseEntity<?> crearProfesional(@RequestBody Map<String, Object> request) {
-        try {
-            // Parsear y extraer datos del request
-            String apellido = (String) request.get("apellido");
-            String nombre = (String) request.get("nombre");
-            String email = (String) request.get("email");
-            String telefono = (String) request.get("telefono");
-            String especialidad = (String) request.get("especialidad");
-            String servicioId = request.containsKey("servicioId") ? (String) request.get("servicioId") : null;
-
-
-            // Crear un objeto Profesional
-            Profesional nuevoProfesional = profesionalService.saveProfesional(apellido, nombre, email, telefono, especialidad, servicioId);
-
-            // Llamar al servicio para guardar el profesional
-
-
-            // Responder con el profesional creado
-            return ResponseEntity.ok(nuevoProfesional);
-        } catch (IllegalArgumentException e) {
-            // Manejo de excepciones específicas
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            // Manejo de cualquier otra excepción
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el profesional: " + e.getMessage());
-        }
-    }
-
-     */
-
-
-
-
-
 
 
     @DeleteMapping("/{id}")

@@ -29,7 +29,7 @@ const UserProfile = () => {
             .catch(() => setError('Error fetching user data'));
 
         // Obtener la lista de servicios
-        request('GET', '/api/servicio', null)
+        request('GET', '/api/servicio/all', null)
             .then(response => setServicios(response.data))
             .catch(() => setError('Error fetching services'));
         

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,23 +89,26 @@ public class ServicioService {
 }
 
 
-    public List<Profesional> getProfesionalesPorServicio(String servicioId) {
+public List<Profesional> getProfesionalesPorServicio(String servicioId) {
 
-        Servicio servicio = servicioRepo.findById(servicioId)
-                .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado"));
+    Servicio servicio = servicioRepo.findById(servicioId)
+            .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado"));
 
-        List<ProfesionalDTO> profesionalesDTO = servicio.getProfesionales();
+    List<ProfesionalDTO> profesionalesDTO = servicio.getProfesionales();
 
-
-        List<Profesional> profesionales = new ArrayList<>();
-        for (ProfesionalDTO profesionalDTO : profesionalesDTO) {
-            Profesional profesional = profesionalRepo.findById(profesionalDTO.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Profesional no encontrado"));
-            profesionales.add(profesional);
-        }
-
-        return profesionales;
+    // Si la lista de profesionalesDTO está vacía, retornar una lista vacía
+    if (profesionalesDTO == null || profesionalesDTO.isEmpty()) {
+        return Collections.emptyList();
     }
+
+    List<Profesional> profesionales = new ArrayList<>();
+    for (ProfesionalDTO profesionalDTO : profesionalesDTO) {
+        profesionalRepo.findById(profesionalDTO.getId()).ifPresent(profesionales::add);
+    }
+
+    return profesionales;
+}
+
 
 
 public List<Servicio> obtenerServiciosPorProfesional(String profesionalId) {

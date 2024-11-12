@@ -23,32 +23,26 @@ public class TurnoController {
     @Autowired
     private TurnoService turnoService;
     
-    /*@GetMapping
-    public List<TurnoDTO> getAllTurnos() {
-        return turnoService.getAllTurnos();
-    }
-
-     */
 
 
-    // Endpoint para crear un turno
+   
     @PostMapping("/sacar-turno")
     public ResponseEntity<?> crearTurno(@RequestBody Map<String, Object> request) {
         try {
-            // Verificar que todos los parámetros requeridos estén presentes
+         
             if (!request.containsKey("dia") || !request.containsKey("horarioInicio") ||
                     !request.containsKey("servicioId") || !request.containsKey("usuarioId")) {
                 return ResponseEntity.badRequest().body("Parámetros 'dia', 'horarioInicio', 'servicioId', y 'usuarioId' son requeridos.");
             }
     
-            // Parsear los parámetros
+    
             LocalDate dia = LocalDate.parse((String) request.get("dia"));
             LocalTime horarioInicio = LocalTime.parse((String) request.get("horarioInicio"));
             String profesionalId = request.containsKey("profesionalId") ? (String) request.get("profesionalId") : null;
             String servicioId = (String) request.get("servicioId");
             String usuarioId = (String) request.get("usuarioId");
     
-            // Intentar reservar el turno
+           
             Turno nuevoTurno = turnoService.reservarTurno(dia, horarioInicio, servicioId, profesionalId, usuarioId);
     
             return ResponseEntity.ok(nuevoTurno);
@@ -117,20 +111,8 @@ public class TurnoController {
         }
 
     }
-    /*@GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<TurnoDTO>> getTurnosByUsuarioId(@PathVariable String usuarioId) {
-        try {
-            List<TurnoDTO> turnos = turnoService.getTurnosByUsuarioId(usuarioId);
-            return ResponseEntity.ok(turnos);
-        } catch (Exception e) {
-            System.out.print("error" + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
+    
 
-     */
-
-    // Endpoint para obtener un turno por ID
     @GetMapping("/{id}")
     public Turno obtenerTurno(@PathVariable String id) {
         return turnoService.obtenerTurnoPorId(id);

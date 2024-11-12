@@ -139,7 +139,7 @@ const RegisterProfesional = () => {
                     placeholder="Especialidad"
                     value={formData.especialidad}
                     onChange={handleChange}
-                    required
+                    
                 />
 
                 <h3>Disponibilidad</h3>

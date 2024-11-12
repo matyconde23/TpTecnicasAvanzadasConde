@@ -24,7 +24,7 @@ public class ServicioController {
     private ServicioService servicioService;
 
 
-    @GetMapping()
+    @GetMapping("/all")
     public List<Servicio> getAllservicios() {
         return servicioService.getAllServicios();
     }
@@ -103,17 +103,5 @@ public class ServicioController {
     }
 
 
-   /* @DeleteMapping("/{servicioId}")
-    public ResponseEntity<?> eliminarServicio(@PathVariable String servicioId) {
-        try {
-            servicioService.eliminarServicio(servicioId);
-            return ResponseEntity.ok("Servicio eliminado y de los profesionales.");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar el servicio: " + e.getMessage());
-        }
-    }
 
-    */
 }
