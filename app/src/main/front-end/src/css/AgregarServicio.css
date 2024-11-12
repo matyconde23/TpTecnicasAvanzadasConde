@@ -28,6 +28,8 @@
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    display: block; /* Para que el margin auto funcione */
+    margin: 0 auto; /* Centrado horizontal */
 }
 
 .confirmar-agregar-button:hover {

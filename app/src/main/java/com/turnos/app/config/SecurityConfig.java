@@ -67,8 +67,12 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers(HttpMethod.GET, "api/profesional/all").hasRole("PROFESIONAL")
                                 .requestMatchers(HttpMethod.GET,"/api/turno/profesional/{profesionalId}").authenticated()
                                 .requestMatchers(HttpMethod.POST,"/api/turno/cancelar-profesional").authenticated()
-                                .requestMatchers(HttpMethod.GET,"api/servicios/all").anonymous()
+                                .requestMatchers(HttpMethod.GET,"api/servicio").anonymous()
                                 .requestMatchers(HttpMethod.GET,"/api/turno/usuario/{usuarioId}").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/api/turno/eliminar/{turnoId}").hasRole("ADMIN") 
+                                .requestMatchers(HttpMethod.POST,"/api/turno/cancelar-usuario").hasRole("USER")
+
+
                                  // Permitir la consulta de todos los profesionales a usuarios anónimos
                                 .anyRequest().authenticated() // Cualquier otra solicitud requiere autenticación
                 )

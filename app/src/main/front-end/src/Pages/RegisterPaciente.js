@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { request } from '../services/Api';
+import '../css/RegisterPaciente.css';
 
 const RegisterPaciente = () => {
     const [formData, setFormData] = useState({
@@ -40,7 +41,7 @@ const RegisterPaciente = () => {
     };
 
     return (
-        <div>
+        <div className="container">
             <h2>Registrar Paciente</h2>
             <form onSubmit={handleSubmit}>
                 <input

@@ -1,9 +1,11 @@
 // UserProfile.js
 import React, { useEffect, useState } from 'react';
 import { request } from '../services/Api';
+import { useNavigate } from 'react-router-dom';
 import PerfilUsuario from '../Components/PerfilUsuario';
 import TurnosUsuario from '../Components/TurnosUsuario';
 import SacarTurno from '../Components/SacarTurno';
+import '../css/UserProfile.css';
 
 const UserProfile = () => {
     const [userData, setUserData] = useState(null);
@@ -12,6 +14,7 @@ const UserProfile = () => {
     const [servicios, setServicios] = useState([]);
     const [turnoConfirmado, setTurnoConfirmado] = useState(null);
     const [view, setView] = useState('perfil'); // Controla la vista actual
+    const navigate = useNavigate();
 
     useEffect(() => {
         const userId = window.localStorage.getItem('id');
@@ -45,16 +48,29 @@ const UserProfile = () => {
     const handleCancelTurno = (turnoId) => {
         setTurnos(turnos.filter(turno => turno.id !== turnoId)); // Actualiza la lista de turnos
     };
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
+    };
 
     return (
-        <div>
+        <div className="user-profile-container">
             {error && <p>{error}</p>}
 
-            {/* Botones de navegación */}
-            <div style={{ marginBottom: '20px' }}>
-                <button onClick={() => setView('perfil')}>Ver Datos Personales</button>
-                <button onClick={() => setView('viewTurnos')}>Ver Turnos</button>
-                <button onClick={() => setView('viewSacarTurno')}>Sacar Turno</button>
+            {/* Navbar de navegación */}
+            <div className="navbar">
+                <button onClick={() => setView('perfil')} className="navbar-button">
+                    Ver Datos Personales
+                </button>
+                <button onClick={() => setView('viewTurnos')} className="navbar-button">
+                    Ver Turnos
+                </button>
+                <button onClick={() => setView('viewSacarTurno')} className="navbar-button">
+                    Sacar Turno
+                </button>
+                <button onClick={handleLogout} className="navbar-button">
+                    Cerrar Sesión
+                </button>
             </div>
 
             {/* Vista actual basada en el estado view */}
@@ -63,16 +79,18 @@ const UserProfile = () => {
                 <TurnosUsuario turnos={turnos} userId={userData?.id} onCancelTurno={handleCancelTurno} />
             )}
             {view === 'viewSacarTurno' && (
-                <SacarTurno
-                    userId={userData?.id}
-                    servicios={servicios}
-                    onTurnoConfirmado={handleTurnoConfirmado}
-                />
+                <div className="reservar-turno">
+                    <SacarTurno
+                        userId={userData?.id}
+                        servicios={servicios}
+                        onTurnoConfirmado={handleTurnoConfirmado}
+                    />
+                </div>
             )}
 
             {/* Mensaje de confirmación de turno */}
             {turnoConfirmado && (
-                <div>
+                <div className="turno-confirmado">
                     <h3>Turno Confirmado</h3>
                     <p>Fecha: {turnoConfirmado.dia}</p>
                     <p>Hora Inicio: {turnoConfirmado.fechainicio}</p>

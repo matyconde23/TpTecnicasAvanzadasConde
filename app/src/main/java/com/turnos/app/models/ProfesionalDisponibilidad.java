@@ -1,27 +1,29 @@
 package com.turnos.app.models;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-public class ProfesionalDisponibilidad {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private String diaSemana;  // Ej: Lunes, Martes, etc.
+public class ProfesionalDisponibilidad {
+    @JsonProperty("dia")
+    private DayOfWeek diaSemana;  // Ej: MONDAY, TUESDAY, etc.
     private LocalTime horaInicio;
     private LocalTime horaFin;
     private Profesional profesional;
 
-    public ProfesionalDisponibilidad(String diaSemana, LocalTime horaInicio, LocalTime horaFin, Profesional profesional) {
+    public ProfesionalDisponibilidad(DayOfWeek diaSemana, LocalTime horaInicio, LocalTime horaFin, Profesional profesional) {
         this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.profesional = profesional;
     }
 
-
-    public String getDiaSemana() {
+    public DayOfWeek getDiaSemana() {
         return diaSemana;
     }
 
-    public void setDiaSemana(String diaSemana) {
+    public void setDiaSemana(DayOfWeek diaSemana) {
         this.diaSemana = diaSemana;
     }
 
@@ -49,5 +51,3 @@ public class ProfesionalDisponibilidad {
         this.profesional = profesional;
     }
 }
-
-

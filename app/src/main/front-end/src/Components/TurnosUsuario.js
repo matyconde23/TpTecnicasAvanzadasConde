@@ -1,6 +1,7 @@
 // UserAppointments.js
 import React from 'react';
 import { request } from '../services/Api';
+import '../css/TurnosUsuario.css';
 
 const TurnosUsuario = ({ turnos, userId, onCancelTurno }) => {
     const handleCancelarTurno = (turnoId) => {
@@ -17,16 +18,19 @@ const TurnosUsuario = ({ turnos, userId, onCancelTurno }) => {
             .catch(() => alert("Error al cancelar el turno"));
     };
 
+    // Filtrar solo los turnos con estado "RESERVADO"
+    const turnosReservados = turnos.filter(turno => turno.estado === 'RESERVADO');
+
     return (
-        <div>
-            <h2>Mis Turnos</h2>
-            {turnos.length > 0 ? (
-                turnos.map((turno) => (
-                    <div key={turno.id} style={{ border: '1px solid #ddd', padding: '10px', margin: '10px 0' }}>
-                        <p>Fecha: {turno.dia}</p>
-                        <p>Hora Inicio: {turno.fechainicio}</p>
-                        <p>Profesional: {turno.profesional.nombre} {turno.profesional.apellido}</p>
-                        <p>Servicio: {turno.servicio.nombre}</p>
+        <div className="turnos-container">
+            <h2>Mis Turnos Reservados</h2>
+            {turnosReservados.length > 0 ? (
+                turnosReservados.map((turno) => (
+                    <div key={turno.id} className="turno-card">
+                        <p className="turno-info">Fecha: {turno.dia}</p>
+                        <p className="turno-info">Hora Inicio: {turno.fechainicio}</p>
+                        <p className="turno-info">Profesional: {turno.profesional.nombre} {turno.profesional.apellido}</p>
+                        <p className="turno-info">Servicio: {turno.servicio.nombre}</p>
                         <button onClick={() => handleCancelarTurno(turno.id)}>Cancelar Turno</button>
                     </div>
                 ))
@@ -38,3 +42,6 @@ const TurnosUsuario = ({ turnos, userId, onCancelTurno }) => {
 };
 
 export default TurnosUsuario;
+
+
+

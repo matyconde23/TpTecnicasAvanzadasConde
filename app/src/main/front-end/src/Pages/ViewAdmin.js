@@ -1,77 +1,40 @@
 import React, { useState } from 'react';
-import { request } from '../services/Api'; // Importa la función de solicitud configurada con token
+import TurnosAdmin from '../Components/TurnosAdmin';
+import ServicioNuevo from '../Components/ServicioNuevo';
+import '../css/ViewAdmin.css'; // Importación del CSS compartido
 
 const ViewAdmin = () => {
-    const [nombre, setNombre] = useState('');
-    const [descripcion, setDescripcion] = useState('');
-    const [duracionMinutos, setDuracionMinutos] = useState('');
-    const [error, setError] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+    const [showTurnos, setShowTurnos] = useState(false);
+    const [showServicioNuevo, setShowServicioNuevo] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            // Validar que los campos no estén vacíos
-            if (!nombre || !descripcion || !duracionMinutos) {
-                setError("Todos los campos son obligatorios");
-                return;
-            }
+    const toggleTurnos = () => {
+        setShowTurnos(!showTurnos);
+        setShowServicioNuevo(false);
+    };
 
-            const requestData = {
-                nombre,
-                descripcion,
-                duracionMinutos: parseInt(duracionMinutos),
-            };
-
-            // Realizar la solicitud para crear el servicio
-            const response = await request('POST', '/api/servicio/crear', requestData);
-            
-            setSuccessMessage(`Servicio "${response.data.nombre}" creado exitosamente.`);
-            setError('');
-            setNombre('');
-            setDescripcion('');
-            setDuracionMinutos('');
-        } catch (error) {
-            console.error("Error al crear el servicio:", error.response);
-            setError(error.response?.data || 'Error al crear el servicio');
-        }
+    const toggleServicioNuevo = () => {
+        setShowServicioNuevo(!showServicioNuevo);
+        setShowTurnos(false);
     };
 
     return (
-        <div className="container">
-            <h2>Crear Nuevo Servicio</h2>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Nombre del Servicio:</label>
-                    <input
-                        type="text"
-                        value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
-                    />
-                </div>
+        <div className="view-admin-container">
+            <h2 className="title">Vista del Administrador</h2>
+            {/* Navbar para acceder a los diferentes componentes */}
+            <nav className="navbar">
+                <button onClick={toggleTurnos} className="navbar-button">
+                    {showTurnos ? 'Ocultar Gestión de Turnos' : 'Ver Gestión de Turnos'}
+                </button>
+                <button onClick={toggleServicioNuevo} className="navbar-button">
+                    {showServicioNuevo ? 'Ocultar Crear Nuevo Servicio' : 'Crear Nuevo Servicio'}
+                </button>
+            </nav>
 
-                <div>
-                    <label>Descripción:</label>
-                    <textarea
-                        value={descripcion}
-                        onChange={(e) => setDescripcion(e.target.value)}
-                    />
-                </div>
-
-                <div>
-                    <label>Duración (minutos):</label>
-                    <input
-                        type="number"
-                        value={duracionMinutos}
-                        onChange={(e) => setDuracionMinutos(e.target.value)}
-                    />
-                </div>
-
-                <button type="submit">Crear Servicio</button>
-            </form>
-
-            {error && <p className="error">{error}</p>}
-            {successMessage && <p className="success">{successMessage}</p>}
+            {/* Contenido dinámico con scroll */}
+            <div className="scrollable-content">
+                {showTurnos && <TurnosAdmin />}
+                {showServicioNuevo && <ServicioNuevo />}
+            </div>
         </div>
     );
 };

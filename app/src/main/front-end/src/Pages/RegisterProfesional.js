@@ -17,9 +17,15 @@ const RegisterProfesional = () => {
     const [success, setSuccess] = useState('');
     const [useDefaultDisponibilidad, setUseDefaultDisponibilidad] = useState(true);
     const [disponibilidad, setDisponibilidad] = useState([{ dia: '', horaInicio: '', horaFin: '' }]);
-    const [selectedDays, setSelectedDays] = useState([]); // Controlar días seleccionados
+    const [selectedDays, setSelectedDays] = useState([]);
 
-    const diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
+    const diasSemana = [
+        { es: "Lunes", en: "MONDAY" },
+        { es: "Martes", en: "TUESDAY" },
+        { es: "Miércoles", en: "WEDNESDAY" },
+        { es: "Jueves", en: "THURSDAY" },
+        { es: "Viernes", en: "FRIDAY" }
+    ];
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -35,20 +41,22 @@ const RegisterProfesional = () => {
         setDisponibilidad([...disponibilidad, { dia: '', horaInicio: '', horaFin: '' }]);
     };
 
-    const handleDayChange = (index, value) => {
+    const handleDayChange = (index, selectedDayEs) => {
+        const selectedDayEn = diasSemana.find(dia => dia.es === selectedDayEs).en;
         const newDisponibilidad = [...disponibilidad];
-        newDisponibilidad[index].dia = value;
+        newDisponibilidad[index].dia = selectedDayEn; // Guarda en inglés
         setDisponibilidad(newDisponibilidad);
-
-        // Actualizar días seleccionados
-        const newSelectedDays = disponibilidad
-            .map((disp) => disp.dia)
-            .filter((dia) => dia); // Filtrar días vacíos
+    
+        const newSelectedDays = newDisponibilidad
+            .map((disp) => diasSemana.find(d => d.en === disp.dia)?.es)
+            .filter((dia) => dia);
         setSelectedDays(newSelectedDays);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("Disponibilidad antes de enviar:", disponibilidad); // Agregar esta línea para depuración
+    
         try {
             const disponibilidadData = useDefaultDisponibilidad ? null : disponibilidad;
             await request('POST', '/api/auth/register/profesional', { ...formData, disponibilidad: disponibilidadData });
@@ -66,7 +74,7 @@ const RegisterProfesional = () => {
             });
             setDisponibilidad([{ dia: '', horaInicio: '', horaFin: '' }]);
             setUseDefaultDisponibilidad(true);
-            setSelectedDays([]); // Restablecer días seleccionados
+            setSelectedDays([]);
         } catch (error) {
             const errorMsg = error.response?.data || 'Error al registrar el profesional';
             setError(errorMsg);
@@ -74,7 +82,7 @@ const RegisterProfesional = () => {
     };
 
     return (
-        <div className="register-profesional-container">
+        <div className="register-profesional-container scrollable-container">
             <h2>Registrar Profesional</h2>
             <form onSubmit={handleSubmit} className="register-form">
                 <input
@@ -162,16 +170,16 @@ const RegisterProfesional = () => {
                             <div key={index} className="disponibilidad-entry">
                                 <label>Día:</label>
                                 <select
-                                    value={disp.dia}
+                                    value={diasSemana.find(d => d.en === disp.dia)?.es || ""}
                                     onChange={(e) => handleDayChange(index, e.target.value)}
                                     required
                                 >
                                     <option value="">Selecciona un día</option>
                                     {diasSemana
-                                        .filter((dia) => !selectedDays.includes(dia) || dia === disp.dia)
-                                        .map((dia) => (
-                                            <option key={dia} value={dia}>
-                                                {dia}
+                                        .filter(dia => !selectedDays.includes(dia.es) || dia.en === disp.dia)
+                                        .map(dia => (
+                                            <option key={dia.en} value={dia.es}>
+                                                {dia.es}
                                             </option>
                                         ))}
                                 </select>

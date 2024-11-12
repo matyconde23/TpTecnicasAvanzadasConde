@@ -1,0 +1,84 @@
+/* Contenedor principal */
+.user-profile-container {
+    max-width: max-content;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    color: #333;
+    font-family: Arial, sans-serif;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Habilita el desplazamiento vertical si es necesario */
+    max-height: 90vh; /* Limita la altura para que ocupe casi toda la pantalla */
+}
+
+/* Título */
+.title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #007bff;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: center;
+    background-color: #007bff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    gap: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones en la navbar */
+.navbar-button {
+    padding: 10px 16px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    background-color: #0056b3;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.navbar-button:hover {
+    background-color: #003d82;
+}
+
+/* Contenedor para el contenido dinámico con scroll */
+
+
+/* Estilos para el formulario de reserva de turno */
+.reservar-turno {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px; /* Reducido para ajustar el tamaño del formulario */
+    max-width: 600px; /* Ancho máximo reducido */
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    color: #ffffff;
+    max-height: 70vh; /* Limita la altura del formulario */
+    overflow-y: auto; /* Habilita el scroll vertical en el formulario */
+}
+
+/* Estilos para el mensaje de confirmación de turno */
+.turno-confirmado {
+    background-color: rgba(0, 123, 255, 0.1);
+    border: 1px solid #007bff;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 20px auto;
+    color: #ffffff;
+    font-size: 14px;
+    text-align: left;
+    overflow-y: auto;
+    max-height: 30vh; /* Añade scroll si el contenido es extenso */
+}

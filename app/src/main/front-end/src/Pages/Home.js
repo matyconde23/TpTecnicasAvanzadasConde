@@ -1,15 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../css/Home.css'; // Asegúrate de crear este archivo para aplicar los estilos
+import '../css/Home.css'; // Importa el archivo de CSS
 
 const Home = () => {
   return (
     <div className="home-container">
-      <h2 className="home-title">Bienvenido</h2>
-      <p className="home-subtitle">Elige una opción:</p>
+      <h1 className="home-title">Bienvenido a Serenity Spa</h1>
+      <p className="home-subtitle">
+        Inicia tu sesión aquí o regístrate para ver qué ofrecemos.
+      </p>
       <div className="button-container">
-        <Link to="/login" className="home-button">Iniciar Sesión</Link>
-        <Link to="/register" className="home-button">Registrarse</Link>
+        <Link to="/login" className="home-button">
+          Iniciar Sesión
+        </Link>
+        <Link to="/register" className="home-button">
+          Registrarse
+        </Link>
       </div>
     </div>
   );

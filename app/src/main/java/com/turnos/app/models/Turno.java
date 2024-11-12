@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,14 +28,13 @@ public class Turno {
         this.dia = dia;
         this.fechainicio = fechainicio;
         this.fechaFin = fechaFin;
-
         this.estado = estado;
-
         this.usuario = usuario;
         this.profesional = profesional;
         this.servicio = servicio;
     }
 
+    
     // Getters y setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

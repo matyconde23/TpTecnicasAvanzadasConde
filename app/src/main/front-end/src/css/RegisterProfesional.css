@@ -19,6 +19,7 @@ body {
     background-color: #fff;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     text-align: center;
+    overflow-y: auto;
 }
 
 h2 {
@@ -115,4 +116,30 @@ h2 {
     font-weight: bold;
     text-align: center;
     margin-top: 15px;
+}
+
+/* Estilo general para el scroll */
+.scrollable-container {
+    overflow-y: auto; /* Habilita el scroll vertical */
+    scrollbar-width: thin; /* Para Firefox: hace que el scroll sea fino */
+    scrollbar-color: #2575fc #f4f4f9; /* Color de la barra y del fondo en Firefox */
+}
+
+/* Estilos para Chrome, Edge y Safari */
+.scrollable-container::-webkit-scrollbar {
+    width: 12px; /* Ancho de la barra de scroll */
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+    background: #f4f4f9; /* Color de fondo de la pista */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+    background-color: #2575fc; /* Color de la barra */
+    border-radius: 6px; /* Bordes redondeados */
+    border: 3px solid #f4f4f9; /* Espacio alrededor de la barra */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+    background-color: #0056b3; /* Color de la barra al pasar el mouse */
 }

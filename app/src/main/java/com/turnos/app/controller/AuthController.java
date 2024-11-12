@@ -3,6 +3,7 @@ package com.turnos.app.controller;
 import com.turnos.app.models.AuthRequest;
 import com.turnos.app.models.AuthResponse;
 import com.turnos.app.models.Profesional;
+import com.turnos.app.models.ProfesionalDisponibilidad;
 import com.turnos.app.models.Usuario;
 
 import com.turnos.app.service.ProfesionalService;
@@ -106,20 +107,45 @@ public ResponseEntity<String> registerUsuario(@RequestBody Usuario usuario) {
 }
 
 
-    @PostMapping("/register/profesional")
-    public ResponseEntity<String> registerProfesional(@RequestBody Profesional profesional) {
-        try {
-            // Guardar el profesional utilizando el servicio
-            profesionalService.saveProfesional(profesional);
+   @PostMapping("/register/profesional")
+public ResponseEntity<String> registerProfesional(@RequestBody Profesional profesional) {
+    try {
+        System.out.println("Intentando registrar profesional: " + profesional.getUsername());
 
-            return ResponseEntity.ok("Profesional registrado con éxito");
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error al registrar el profesional: " + e.getMessage());
+        // Depurar disponibilidad recibida
+        if (profesional.getDisponibilidad() != null && !profesional.getDisponibilidad().isEmpty()) {
+            System.out.println("Disponibilidad personalizada recibida:");
+            for (ProfesionalDisponibilidad disponibilidad : profesional.getDisponibilidad()) {
+                System.out.println(" - Día: " + disponibilidad.getDiaSemana());
+                System.out.println("   Hora Inicio: " + disponibilidad.getHoraInicio());
+                System.out.println("   Hora Fin: " + disponibilidad.getHoraFin());
+            }
+        } else {
+            System.out.println("No se recibió disponibilidad personalizada.");
         }
+
+        // Validaciones adicionales
+        if (profesional.getUsername() == null || profesional.getUsername().isEmpty()) {
+            return ResponseEntity.badRequest().body("El nombre de usuario es obligatorio.");
+        }
+
+        if (profesional.getPassword() == null || profesional.getPassword().isEmpty()) {
+            return ResponseEntity.badRequest().body("La contraseña es obligatoria.");
+        }
+
+        // Guardar el profesional utilizando el servicio
+        profesionalService.saveProfesional(profesional);
+
+        return ResponseEntity.ok("Profesional registrado con éxito");
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+        e.printStackTrace(); // Imprimir excepción completa para depuración
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error al registrar el profesional: " + e.getMessage());
     }
+}
+
 
 
 

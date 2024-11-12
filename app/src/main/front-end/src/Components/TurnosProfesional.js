@@ -1,12 +1,11 @@
-// TurnosProfesional.js
 import React, { useState, useEffect } from 'react';
 import { request } from '../services/Api';
-import '../css/TurnosProfesional.css';
+import '../css/TurnosProfesional.css'; // Importación del CSS
 
 const TurnosProfesional = ({ profesionalId }) => {
     const [turnos, setTurnos] = useState([]);
     const [error, setError] = useState('');
-    const [filtroEstado, setFiltroEstado] = useState(''); // Estado para el filtro de estado
+    const [filtroDia, setFiltroDia] = useState(''); // Estado para el filtro de día de la semana
 
     useEffect(() => {
         const fetchTurnosPorProfesional = async () => {
@@ -43,10 +42,16 @@ const TurnosProfesional = ({ profesionalId }) => {
         }
     };
 
-    // Filtrar turnos según el estado seleccionado
-    const turnosFiltrados = filtroEstado 
-        ? turnos.filter(turno => turno.estado === filtroEstado)
-        : turnos;
+    // Función para obtener el nombre del día de la semana a partir de una fecha
+    const obtenerDiaSemana = (fecha) => {
+        const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        return diasSemana[new Date(fecha).getDay()];
+    };
+
+    // Filtrar turnos según el día de la semana y el estado `RESERVADO`
+    const turnosFiltrados = turnos.filter(turno => 
+        turno.estado === 'RESERVADO' && (!filtroDia || obtenerDiaSemana(turno.dia) === filtroDia)
+    );
 
     // Manejo de errores
     if (error) {
@@ -55,39 +60,41 @@ const TurnosProfesional = ({ profesionalId }) => {
 
     return (
         <div className="turnos-container">
-            {/* Selector de filtro para los estados de turnos */}
-            <label htmlFor="filtro-estado">Filtrar por estado:</label>
+            {/* Selector de filtro para los días de la semana */}
+            <label htmlFor="filtro-dia">Filtrar por día de la semana:</label>
             <select
-                id="filtro-estado"
-                value={filtroEstado}
-                onChange={(e) => setFiltroEstado(e.target.value)}
+                id="filtro-dia"
+                value={filtroDia}
+                onChange={(e) => setFiltroDia(e.target.value)}
                 className="filtro-select"
             >
                 <option value="">Todos</option>
-                <option value="RESERVADO">Reservados</option>
-                <option value="CANCELADO_POR_CLIENTE">Cancelados por Cliente</option>
-                <option value="CANCELADO_POR_PROFESIONAL">Cancelados por Profesional</option>
+                <option value="Lunes">Lunes</option>
+                <option value="Martes">Martes</option>
+                <option value="Miércoles">Miércoles</option>
+                <option value="Jueves">Jueves</option>
+                <option value="Viernes">Viernes</option>
+                <option value="Sábado">Sábado</option>
+                <option value="Domingo">Domingo</option>
             </select>
 
             {/* Lista de turnos filtrada */}
             {turnosFiltrados.length === 0 ? (
-                <p className="no-turnos">No hay turnos disponibles para este profesional en el estado seleccionado.</p>
+                <p className="no-turnos">No hay turnos reservados para este profesional en el día seleccionado.</p>
             ) : (
                 <ul className="turnos-list">
                     {turnosFiltrados.map((turno) => (
                         <li key={turno.id} className="turno-item">
-                            <p><strong>Día:</strong> {turno.dia}</p>
+                            <p><strong>Día:</strong> {turno.dia} ({obtenerDiaSemana(turno.dia)})</p>
                             <p><strong>Hora de Inicio:</strong> {turno.fechainicio}</p>
                             <p><strong>Hora de Fin:</strong> {turno.fechaFin}</p>
                             <p><strong>Estado:</strong> {turno.estado}</p>
-                            {turno.estado !== 'CANCELADO_POR_PROFESIONAL' && (
-                                <button
-                                    className="cancelar-button"
-                                    onClick={() => cancelarTurno(turno.id)}
-                                >
-                                    Cancelar Turno
-                                </button>
-                            )}
+                            <button
+                                className="cancelar-button"
+                                onClick={() => cancelarTurno(turno.id)}
+                            >
+                                Cancelar Turno
+                            </button>
                         </li>
                     ))}
                 </ul>

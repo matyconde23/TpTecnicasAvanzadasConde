@@ -1,0 +1,121 @@
+/* Estilos generales para la página de inicio de sesión */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #0f3d3e, #3d0f3e); /* Gradiente de fondo */
+    overflow: hidden;
+}
+
+/* Contenedor principal de inicio de sesión */
+.container {
+    max-width: 25rem; /* Aproximadamente 400px */
+    width: 100%;
+    padding: 1.25rem; /* 20px */
+    border-radius: 0.5rem; /* 8px */
+    text-align: center;
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo semitransparente */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra el contenido dentro del contenedor */
+}
+
+/* Título */
+h2 {
+    color: #f4f4f9;
+    margin-bottom: 1.25rem;
+    font-weight: bold;
+}
+
+/* Campos de entrada */
+input[type="text"],
+input[type="password"] {
+    width: calc(100% - 1rem); /* Ajusta el ancho tomando en cuenta el padding */
+    padding: 0.75rem; /* 12px */
+    margin: 0.625rem 0; /* 10px */
+    border-radius: 0.3125rem;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    height: 2.5rem;
+    color: #f4f4f9;
+    background-color: #333;
+    box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+/* Botón de Login */
+button[type="submit"] {
+    width: 90%;
+    padding: 0.75rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0.3125rem;
+    margin-top: 0.625rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    height: 2.5rem;
+    box-sizing: border-box;
+    letter-spacing: 1px; 
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Aumenta ligeramente el tamaño al pasar el cursor */
+}
+
+button[type="submit"]:active {
+    transform: scale(0.98); /* Efecto de clic */
+}
+
+/* Mensaje de error */
+p.error {
+    color: red;
+    font-weight: bold;
+    margin-top: 0.625rem;
+}
+
+/* Mensaje de registro */
+.container p {
+    color: #f4f4f9;
+    font-size: 0.875rem;
+    margin: 0.9375rem 0 0.3125rem;
+}
+
+/* Botón de Registro */
+.register-button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 0.3125rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    height: 2.5rem;
+    box-sizing: border-box;
+    margin-top: 0.625rem;
+    
+    letter-spacing: 1px;
+}
+
+.register-button:hover {
+    background-color: #218838;
+    transform: scale(1.05); /* Efecto hover */
+}
+
+.register-button:active {
+    transform: scale(0.98); /* Efecto de clic */
+}

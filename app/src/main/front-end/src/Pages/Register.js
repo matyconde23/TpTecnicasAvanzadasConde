@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../css/Register.css'; // Importa el archivo de estilos
 
 const RoleSelection = () => {
     const navigate = useNavigate();

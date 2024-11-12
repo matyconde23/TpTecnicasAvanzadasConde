@@ -1,0 +1,56 @@
+/* Contenedor principal de la vista del profesional */
+.profesional-view-container {
+    max-width: max-content;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    color: #333;
+    font-family: Arial, sans-serif;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Habilita el desplazamiento vertical si es necesario */
+    max-height: 90vh; /* Limita la altura para que ocupe casi toda la pantalla */
+}
+
+/* Título */
+.title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #007bff;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: center;
+    background-color: #007bff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    gap: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Botones en la navbar */
+.navbar-button {
+    padding: 10px 16px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    background-color: #0056b3;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.navbar-button:hover {
+    background-color: #003d82;
+}
+
+/* Contenedor para el contenido dinámico con scroll */
+
+

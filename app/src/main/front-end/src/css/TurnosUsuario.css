@@ -1,0 +1,57 @@
+/* Contenedor principal */
+.turnos-container {
+    text-align: center;
+    margin-top: 20px;
+    color: #d3d3d3;
+    font-family: Arial, sans-serif;
+    max-height: 80vh; /* Limita la altura del contenedor para habilitar scroll */
+    overflow-y: auto; /* Habilita el desplazamiento vertical */
+    padding-right: 10px; /* Agrega espacio para evitar que el scroll tape el contenido */
+    scrollbar-width: thin; /* Estilo para scroll en Firefox */
+    scrollbar-color: #007bff #333; /* Colores para scroll en Firefox */
+}
+
+/* Título de la sección */
+.turnos-container h2 {
+    font-size: 24px;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+/* Tarjeta de turno individual */
+.turno-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px auto;
+    max-width: 600px; /* Ajusta el ancho máximo de la tarjeta */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    color: #ffffff;
+}
+
+/* Estilo para la información de cada turno */
+.turno-info {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+/* Estilo para el botón de cancelar turno */
+.turno-card button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    width: 100%;
+    max-width: 200px;
+    align-self: center;
+}
+
+.turno-card button:hover {
+    background-color: #0056b3;
+}

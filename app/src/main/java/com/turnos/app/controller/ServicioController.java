@@ -77,9 +77,11 @@ public class ServicioController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al agregar el profesional al servicio: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error al agregar el profesional al servicio: " + e.getMessage());
         }
     }
+
+    
     @GetMapping("/{servicioId}/profesionales")
     public ResponseEntity<?> getProfesionalesPorServicio(@PathVariable String servicioId) {
         try {
@@ -93,7 +95,7 @@ public class ServicioController {
                     .body("Error inesperado: " + e.toString());
         }
     }
-    
+
     @GetMapping("/profesional/{profesionalId}")
     public ResponseEntity<List<Servicio>> obtenerServiciosPorProfesional(@PathVariable String profesionalId) {
         List<Servicio> servicios = servicioService.obtenerServiciosPorProfesional(profesionalId);

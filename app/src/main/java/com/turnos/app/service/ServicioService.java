@@ -7,7 +7,9 @@ import com.turnos.app.models.Servicio;
 import com.turnos.app.repository.ProfesionalRepo;
 import com.turnos.app.repository.ServicioRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,39 +52,39 @@ public class ServicioService {
 
     public Servicio agregarProfesionalaServicio(String profesionalId, String servicioId) {
 
-    if (profesionalId == null || servicioId == null) {
-        throw new IllegalArgumentException("El ID del profesional y el ID del servicio son obligatorios.");
-    }
+        if (profesionalId == null || servicioId == null) {
+            throw new IllegalArgumentException("El ID del profesional y el ID del servicio son obligatorios.");
+        }
 
     // Buscar al profesional en la base de datos
-    Profesional profesional = profesionalRepo.findById(profesionalId)
-            .orElseThrow(() -> new IllegalArgumentException("Profesional no encontrado con el ID: " + profesionalId));
+        Profesional profesional = profesionalRepo.findById(profesionalId)
+                .orElseThrow(() -> new IllegalArgumentException("Profesional no encontrado con el ID: " + profesionalId));
 
     // Buscar el servicio en la base de datos
-    Servicio servicio = servicioRepo.findById(servicioId)
-            .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado con el ID: " + servicioId));
+        Servicio servicio = servicioRepo.findById(servicioId)
+                .orElseThrow(() -> new IllegalArgumentException("Servicio no encontrado con el ID: " + servicioId));
 
     // Crear un DTO del profesional
-    ProfesionalDTO profesionalDTO = new ProfesionalDTO(profesional.getNombre(), profesional.getApellido(), profesional.getId());
+        ProfesionalDTO profesionalDTO = new ProfesionalDTO(profesional.getNombre(), profesional.getApellido(), profesional.getId());
 
     // Inicializar la lista de profesionales si está vacía
-    if (servicio.getProfesionales() == null) {
-        servicio.setProfesionales(new ArrayList<>());
-    }
+        if (servicio.getProfesionales() == null) {
+            servicio.setProfesionales(new ArrayList<>());
+        }
 
     // Validar si el profesional ya está asociado al servicio
-    boolean profesionalYaAgregado = servicio.getProfesionales().stream()
-            .anyMatch(p -> p.getId().equals(profesionalDTO.getId())); // Comprobación basada en el ID único
+        boolean profesionalYaAgregado = servicio.getProfesionales().stream()
+                .anyMatch(p -> p.getId().equals(profesionalDTO.getId())); // Comprobación basada en el ID único
 
-    if (profesionalYaAgregado) {
-        throw new IllegalArgumentException("El profesional ya está agregado a este servicio.");
-    }
+        if (profesionalYaAgregado) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "El profesional ya está agregado a este servicio.");
+        }
 
     // Agregar el profesional al servicio
-    servicio.getProfesionales().add(profesionalDTO);
+        servicio.getProfesionales().add(profesionalDTO);
 
     // Guardar y devolver el servicio actualizado
-    return servicioRepo.save(servicio);
+        return servicioRepo.save(servicio);
 }
 
 
