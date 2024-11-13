@@ -39,7 +39,7 @@ public class UsuarioService {
 
 
     public Usuario saveUsuario(Usuario usuario) {
-        // Verifica si el nombre de usuario ya existe
+        
         if (usuarioRepo.existsByUsername(usuario.getUsername())) {
             throw new IllegalArgumentException("El nombre de usuario ya está en uso.");
         }

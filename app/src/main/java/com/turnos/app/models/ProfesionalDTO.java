@@ -5,7 +5,7 @@ package com.turnos.app.models;
         private String nombre;
         private String apellido;
         private String id;
-        // Constructor, getters y setters
+       
         public ProfesionalDTO(String nombre, String apellido, String id) {
             this.nombre = nombre;
             this.apellido = apellido;

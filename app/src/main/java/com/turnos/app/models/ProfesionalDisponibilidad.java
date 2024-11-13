@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ProfesionalDisponibilidad {
     @JsonProperty("dia")
-    private DayOfWeek diaSemana;  // Ej: MONDAY, TUESDAY, etc.
+    private DayOfWeek diaSemana; 
     private LocalTime horaInicio;
     private LocalTime horaFin;
     private Profesional profesional;

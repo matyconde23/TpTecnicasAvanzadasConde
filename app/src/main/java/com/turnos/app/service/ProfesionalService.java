@@ -87,6 +87,38 @@ public class ProfesionalService {
         return disponibilidadPorDefecto;
     }
 
+    public Profesional updateDisponibilidadProfesional(String profeisonalId, List<ProfesionalDisponibilidad> nuevaDisponibilidad) {
+        // Buscar al profesional por ID
+        Profesional profesional = profesionalRepo.findById(profeisonalId)
+                .orElseThrow(() -> new IllegalArgumentException("Profesional no encontrado"));
+    
+        // Validar si la nueva disponibilidad es nula o vacía, y asignar la disponibilidad por defecto si es necesario
+        if (nuevaDisponibilidad == null || nuevaDisponibilidad.isEmpty()) {
+            System.out.println("No se recibió nueva disponibilidad. Asignando disponibilidad por defecto.");
+            profesional.setDisponibilidad(generarDisponibilidadPorDefecto());
+        } else {
+            System.out.println("Nueva disponibilidad recibida para el profesional con ID: " + profeisonalId);
+            for (ProfesionalDisponibilidad disponibilidad : nuevaDisponibilidad) {
+                System.out.println(" - Día: " + disponibilidad.getDiaSemana());
+                System.out.println("   Hora Inicio: " + disponibilidad.getHoraInicio());
+                System.out.println("   Hora Fin: " + disponibilidad.getHoraFin());
+            }
+            profesional.setDisponibilidad(nuevaDisponibilidad);
+        }
+        
+    
+        // Guardar los cambios en la base de datos
+        return profesionalRepo.save(profesional);
+    }
+
+    public List<ProfesionalDisponibilidad> obtenerDisponibilidad(String profesionalId) {
+        Profesional profesional = profesionalRepo.findById(profesionalId)
+                .orElseThrow(() -> new IllegalArgumentException("Profesional no encontrado"));
+        
+        return profesional.getDisponibilidad();
+    }
+
+
 
 
     public void deleteProfesional(String id) {

@@ -36,11 +36,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Buscar en el repositorio de usuarios
+        
         Optional<Usuario> usuario = usuarioRepository.findByUsername(username);
         if (usuario.isPresent()) {
-            // Convertir el rol a mayúsculas y asignar el rol correcto (ADMIN o USER)
-            String role = usuario.get().getRole().toUpperCase();  // Rol "ADMIN" o "USER"
+            
+            String role = usuario.get().getRole().toUpperCase();  
 
             if (!role.equals("ADMIN") && !role.equals("USER")) {
                 throw new IllegalArgumentException("Rol no válido: " + role);
@@ -55,7 +55,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             );
         }
 
-        // Buscar en el repositorio de profesionales
+        
         Optional<Profesional> profesional = profesionalRepo.findByUsername(username);
         if (profesional.isPresent()) {
             List<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -70,7 +70,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         throw new UsernameNotFoundException("Usuario o profesional no encontrado");
     }
 
-    // Método para verificar si ya existe un ADMIN
+    
     public boolean adminExists() {
         return usuarioRepository.findByRole("ADMIN").isPresent();
     }

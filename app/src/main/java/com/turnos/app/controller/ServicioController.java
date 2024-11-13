@@ -40,26 +40,26 @@ public class ServicioController {
     @PostMapping("/crear")
     public ResponseEntity<?> crearServicio(@RequestBody Map<String, Object> request) {
         try {
-            // Parsear y extraer datos del request
+            
             String nombre = (String) request.get("nombre");
             String descripcion = (String) request.get("descripcion");
-            Integer duracionMinutos = (Integer) request.get("duracionMinutos"); // Duración del servicio
+            Integer duracionMinutos = (Integer) request.get("duracionMinutos"); 
 
-            // Verificar que los campos obligatorios estén presentes
+           
             if (nombre == null || descripcion == null || duracionMinutos == null) {
                 return ResponseEntity.badRequest().body("El nombre, la descripción y la duración son obligatorios.");
             }
 
-            // Crear un nuevo servicio con la lista de profesionales vacía
+           
             Servicio nuevoServicio = servicioService.saveServicio(nombre, descripcion, new ArrayList<>(), duracionMinutos);
 
-            // Responder con el servicio creado
+            
             return ResponseEntity.ok(nuevoServicio);
         } catch (IllegalArgumentException e) {
-            // Manejo de excepciones específicas
+            
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            // Manejo de cualquier otra excepción
+            
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear el servicio: " + e.getMessage());
         }
     }
@@ -71,7 +71,7 @@ public class ServicioController {
         String servicioId = request.containsKey("servicioId") ? (String) request.get("servicioId") : null;
 
         try {
-            // Llamar al servicio para agregar el profesional al servicio
+            
             Servicio actualizado = servicioService.agregarProfesionalaServicio(profesionalId, servicioId);
             return ResponseEntity.ok(actualizado);
         } catch (IllegalArgumentException e) {
@@ -85,7 +85,7 @@ public class ServicioController {
     @GetMapping("/{servicioId}/profesionales")
     public ResponseEntity<?> getProfesionalesPorServicio(@PathVariable String servicioId) {
         try {
-            // Llamar al servicio para obtener la lista de profesionales
+            
             List<Profesional> profesionales = servicioService.getProfesionalesPorServicio(servicioId);
             return ResponseEntity.ok(profesionales);
         } catch (IllegalArgumentException e) {

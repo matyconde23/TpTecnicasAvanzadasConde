@@ -56,14 +56,14 @@ public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
     final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
     String jwt = jwtUtil.generateToken(userDetails);
 
-    // Primero, intenta encontrar un usuario con el nombre de usuario proporcionado
+    
     Usuario usuario = null;
     Profesional profesional = null;
 
     try {
         usuario = usuarioService.findByUsername(authRequest.getUsername());
     } catch (Exception e) {
-        // Aquí simplemente manejamos la excepción o la ignoramos si no se encuentra un Usuario
+        
     }
 
     if (usuario != null) {
@@ -71,11 +71,11 @@ public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         return ResponseEntity.ok(authResponse);
     }
 
-    // Si no se encuentra un usuario, intenta encontrar un profesional
+    
     try {
         profesional = profesionalService.findByUsername(authRequest.getUsername());
     } catch (Exception e) {
-        // Aquí manejamos la excepción o la ignoramos si no se encuentra un Profesional
+        
     }
 
     if (profesional != null) {
@@ -83,7 +83,7 @@ public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         return ResponseEntity.ok(authResponse);
     }
 
-    // Si no se encuentra ni usuario ni profesional, devolver un error
+    
     return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: Usuario o profesional no encontrado.");
 }
 

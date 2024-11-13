@@ -73,8 +73,8 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .requestMatchers(HttpMethod.POST,"/api/turno/cancelar-usuario").hasRole("USER")
 
 
-                                 // Permitir la consulta de todos los profesionales a usuarios anónimos
-                                .anyRequest().authenticated() // Cualquier otra solicitud requiere autenticación
+                                
+                                .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -48,11 +48,11 @@ public class TurnoController {
             return ResponseEntity.ok(nuevoTurno);
     
         } catch (ReservaTurnoException e) {
-            // Manejar errores específicos de reserva de turno con un código 500
+            
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error al reservar el turno: " + e.getMessage());
     
         } catch (IllegalArgumentException e) {
-            // Manejar errores de validación
+            
             return ResponseEntity.badRequest().body("Error de validación: " + e.getMessage());
     
         } catch (Exception e) {
@@ -63,48 +63,48 @@ public class TurnoController {
     @PostMapping("/cancelar-profesional")
     public ResponseEntity<?> cancelarTurnoPorProfesional(@RequestBody Map<String, String> request) {
         try {
-            // Validar que 'turnoId' y 'profesionalId' estén presentes
+            
             if (!request.containsKey("turnoId") || !request.containsKey("profesionalId")) {
                 return ResponseEntity.badRequest().body("Parámetros 'turnoId' y 'profesionalId' son requeridos.");
             }
 
-            // Extraer los datos del request
+           
             String turnoId = request.get("turnoId");
             String profesionalId = request.get("profesionalId");
 
-            // Llamar al servicio para cancelar el turno
+        
             Turno turnoCancelado = turnoService.cancelarTurnoPorProfesional(turnoId, profesionalId);
 
-            // Responder con el turno cancelado
+            
             return ResponseEntity.ok(turnoCancelado);
         } catch (IllegalArgumentException e) {
-        // Manejo de excepciones específicas
+        
         return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         } catch (Exception e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Error al cancelar el turno: " + e.getMessage());
     }
     }
 
-    // Endpoint para que el usuario cancele un turno
+    
     @PostMapping("/cancelar-usuario")
     public ResponseEntity<?> cancelarTurnoPorUsuario(@RequestBody Map<String, String> request) throws ReservaTurnoException {
         try {
-            // Validar que 'turnoId' y 'usuarioId' estén presentes
+            
             if (!request.containsKey("turnoId") || !request.containsKey("usuarioId")) {
                 return ResponseEntity.badRequest().body("Parámetros 'turnoId' y 'usuarioId' son requeridos.");
             }
 
-            // Extraer los datos del request
+           
             String turnoId = request.get("turnoId");
             String usuarioId = request.get("usuarioId");
 
-            // Llamar al servicio para cancelar el turno
+           
             ResponseEntity<?> turnoCancelado = turnoService.cancelarTurnoPorUsuario(turnoId, usuarioId);
 
-            // Responder con el turno cancelado
+            
             return ResponseEntity.ok(turnoCancelado);
         } catch (IllegalArgumentException e) {
-            // Manejo de excepciones específicas
+            
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error al cancelar el turno: " + e.getMessage());
