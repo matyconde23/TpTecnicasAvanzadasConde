@@ -85,10 +85,12 @@ const TurnosProfesional = ({ profesionalId }) => {
                 <ul className="turnos-list">
                     {turnosFiltrados.map((turno) => (
                         <li key={turno.id} className="turno-item">
-                            <p><strong>Día:</strong> {turno.dia} ({obtenerDiaSemana(turno.dia)})</p>
+                            <p><strong>Servicio:</strong> {turno.servicio?.nombre || 'No especificado'}</p> {/* Agregado el nombre del servicio */}
+                            <p><strong>Día:</strong> {turno.dia}</p>
                             <p><strong>Hora de Inicio:</strong> {turno.fechainicio}</p>
                             <p><strong>Hora de Fin:</strong> {turno.fechaFin}</p>
                             <p><strong>Estado:</strong> {turno.estado}</p>
+                            
                             <button
                                 className="cancelar-button"
                                 onClick={() => cancelarTurno(turno.id)}

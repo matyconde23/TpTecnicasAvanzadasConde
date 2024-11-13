@@ -4,7 +4,7 @@ package com.turnos.app.models;
     public class ProfesionalDTO {
         private String nombre;
         private String apellido;
-        private String id;
+        public String id;
        
         public ProfesionalDTO(String nombre, String apellido, String id) {
             this.nombre = nombre;

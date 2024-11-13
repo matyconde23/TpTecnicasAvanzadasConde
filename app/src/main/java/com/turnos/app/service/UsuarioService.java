@@ -39,29 +39,31 @@ public class UsuarioService {
 
 
     public Usuario saveUsuario(Usuario usuario) {
-        
+    
+        // Verificar si el nombre de usuario ya existe
         if (usuarioRepo.existsByUsername(usuario.getUsername())) {
             throw new IllegalArgumentException("El nombre de usuario ya está en uso.");
         }
-
-
+    
+        // Validar el rol del usuario: solo se permiten "USER" o "ADMIN"
         String role = (usuario.getRole() != null) ? usuario.getRole().toUpperCase() : "USER";
         if (!role.equals("USER") && !role.equals("ADMIN")) {
             throw new IllegalArgumentException("Rol inválido. Debe ser 'USER' o 'ADMIN'");
         }
-
-
+    
+        // Verificar si ya existe un administrador en el sistema
         if (role.equals("ADMIN") && usuarioRepo.findByRole("ADMIN").isPresent()) {
             throw new IllegalArgumentException("Ya existe un administrador en el sistema.");
         }
-
+    
+        // Configuración final del rol y encriptación de la contraseña
         usuario.setRole(role);
-
         usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-
-
+    
+        // Guardar el usuario en el repositorio
         return usuarioRepo.save(usuario);
     }
+    
 
 
     public void deleteUsuario(String id) {
